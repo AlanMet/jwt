@@ -1,4 +1,4 @@
-name: jwt
+name: dart_jwt
 description: A simple JWT library in Dart.
 version: 0.2.0
 

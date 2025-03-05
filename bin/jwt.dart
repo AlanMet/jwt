@@ -1,4 +1,4 @@
-import 'package:jwt/jwt.dart';
+import 'package:dart_jwt/jwt.dart';
 
 void main() {
   JWT jwt = JWT('private_key.pem', 'public_key.pem');
