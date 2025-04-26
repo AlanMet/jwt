@@ -1,26 +1,58 @@
 import 'package:easy_dart_jwt/easy_dart_jwt.dart';
 
-void main() {
-  JWT jwt = JWT('private_key.pem', 'public_key.pem');
-
-  Map<String, dynamic> payload = {
-    'sub': '1234567890', // Subject, typically a user ID or unique identifier
-    'name': 'John Doe', // User's name
-    'iat':
-        DateTime.now().millisecondsSinceEpoch ~/
-        1000, // Issued at time (in seconds)
+/// Generates a JWT for the given payload, prints the token,
+/// decoded payload, and verification result.
+void handleValidToken(JWT jwt) {
+  final validPayload = {
+    'sub': '1234567890',
+    'name': 'John Doe',
+    'iat': DateTime.now().millisecondsSinceEpoch ~/ 1000,
     'exp':
-        DateTime.now()
-            .add(Duration(hours: 1)) // Expiration time (1 hour from now)
-            .millisecondsSinceEpoch ~/
-        1000, // Expiration in seconds
+        DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
   };
 
-  String token = jwt.createToken(payload);
-  print(token);
+  // Create token
+  final token = jwt.createToken(validPayload);
+  print('Valid Token: $token');
 
-  payload = jwt.decodePayload(token);
-  print(payload);
+  // Decode and print payload
+  final decoded = jwt.decodePayload(token);
+  print('Decoded Payload: $decoded');
 
-  print("token is verified: ${jwt.verifyToken(token)}");
+  // Verify token
+  final isVerified = jwt.verifyToken(token);
+  print('Token verified: $isVerified');
+}
+
+/// Generates an expired JWT, prints the token and its validity.
+void handleExpiredToken(JWT jwt) {
+  final expiredPayload = {
+    'sub': '1234567890',
+    'name': 'John Doe',
+    'iat':
+        DateTime.now().subtract(Duration(hours: 2)).millisecondsSinceEpoch ~/
+        1000,
+    'exp':
+        DateTime.now().subtract(Duration(hours: 1)).millisecondsSinceEpoch ~/
+        1000,
+  };
+
+  // Create expired token
+  final expiredToken = jwt.createToken(expiredPayload);
+  print('Expired Token: $expiredToken');
+
+  // Check validity
+  final isStillValid = jwt.isValid(expiredToken);
+  print('Expired token is valid: $isStillValid');
+}
+
+void main() {
+  // Initialize JWT with your key pair
+  final jwt = JWT('private_key.pem', 'public_key.pem');
+
+  // Handle a valid token scenario
+  handleValidToken(jwt);
+
+  // Handle an expired token scenario
+  handleExpiredToken(jwt);
 }

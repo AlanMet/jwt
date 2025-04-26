@@ -138,6 +138,50 @@ class JWT {
     }
   }
 
+  /// Validates a JWT token by verifying its signature and checking its expiration.
+  ///
+  /// This method performs the following checks:
+  /// 1. Verifies the token's signature using the `verifyToken` method.
+  /// 2. Decodes the token's payload to check for an expiration (`exp`) field.
+  /// 3. Compares the current time with the expiration time to determine if the token is still valid.
+  ///
+  /// If the token fails any of these checks, the method returns `false`.
+  ///
+  /// If an error occurs during validation, it is caught and logged, and the method returns `false`.
+  ///
+  /// Returns:
+  /// - `true` if the token is valid.
+  /// - `false` if the token is invalid or an error occurs.
+  ///
+  /// Parameters:
+  /// - `token`: The JWT token to validate.
+  bool isValid(String token) {
+    try {
+      // Verify the token's signature
+      if (!verifyToken(token)) {
+        return false;
+      }
+
+      // Decode the payload to check expiration
+      final payload = decodePayload(token);
+
+      if (payload.containsKey('exp')) {
+        final exp = payload['exp'];
+        final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+        // Check if the token is expired
+        if (currentTime >= exp) {
+          return false;
+        }
+      }
+
+      return true;
+    } catch (e) {
+      print('Error validating token: $e');
+      return false;
+    }
+  }
+
   Map<String, dynamic> _getHeader() {
     return {"alg": "RS256", "typ": "JWT"};
   }
