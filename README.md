@@ -1,6 +1,8 @@
 # Custom Dart JWT Library
 This is a personal Dart library for creating, verifying, and decoding JSON Web Tokens (JWT) using RSA encryption (RS256).
 
+can be installed through [pub.dev](https://pub.dev/packages/easy_dart_jwt/install)
+
 ## Overview
 The JWT class in this library supports:
 
